@@ -42,6 +42,14 @@ app.get('/persons/:id', (req, res) => {
     }
 });
 
+// delete a resourse
+app.delete('/persons/:id', (req, res) => {
+    const id = Number(req.params.id);
+    persons = persons.filter(person => person.id !== id)
+
+    res.status(204).end();
+});
+
 // define and set the port for the app
 const PORT = 3001;
 app.listen(PORT, () => {
