@@ -11,6 +11,8 @@
   "author": "arif",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "connect": "^3.6.6",
     "express": "^4.16.4"
   },
   "devDependencies": {

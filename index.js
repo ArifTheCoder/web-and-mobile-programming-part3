@@ -1,5 +1,10 @@
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 
 let persons = [
     {
@@ -25,12 +30,12 @@ let persons = [
 ];
 
 // get the whole resourses
-app.get('/persons', (req, res) => {
+app.get('/api/persons', (req, res) => {
     res.json(persons);
 });
 
 // get the resourse searched by id
-app.get('/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)        // convert the route id from string to number 
     const person = persons.find(person => person.id === id)
 
@@ -43,12 +48,36 @@ app.get('/persons/:id', (req, res) => {
 });
 
 // delete a resourse
-app.delete('/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id);
     persons = persons.filter(person => person.id !== id)
 
     res.status(204).end();
 });
+
+// genereate the required ID for new entry
+const generateId = () => {
+    const maxId = persons.length > 0 ? persons.map(n => n.id).sort((a,b) => a - b).reverse()[0] : 1;
+    return maxId + 1;
+}
+// post the request
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+    console.log(typeof(body.name))
+    if(body.name === undefined) {
+        return res.status(400).json({error: 'name is missing'})
+    }
+
+    let person = {
+        name: body.name,
+        number: body.number,
+        id: generateId()
+    }
+
+    persons = persons.concat(person)
+
+    res.json(person)
+})
 
 // define and set the port for the app
 const PORT = 3001;
